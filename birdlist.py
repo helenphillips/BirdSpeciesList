@@ -8,10 +8,13 @@ import twitter, os, time
 ## import twitterlogon.py
 
 
-LATESTFILE = 'birdlist_latest.txt'
+os.chdir('/Users/Helen/TwitterBirdList')
+
+
+LATESTFILE = 'bird_log.txt'
 LOGFILE = 'birdlist_2013.txt'
 
-os.chdir('/Users/Helen/TwitterBirdList')
+
 
 # Find the last tweet that information was taken from
 
@@ -40,9 +43,10 @@ fp = open(LOGFILE, 'a')
 # Get time information for the tweet and add to LOGFILE, and add text ie. species name
 
 for statusObj in results:
-    fp.write('\n'.join(statusObj.created_at[0:16]))
-    fp.write('\n'.join(statusObj.text))
-    fp.write('\n')
+    date = statusObj.created_at[1:16]
+    txt = statusObj.text
+
+    fp.write('\n' + '%s %s' % (date, txt))
 
 fp.close()
 
