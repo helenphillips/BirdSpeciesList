@@ -15,7 +15,6 @@ LATESTFILE = 'bird_log.txt'
 LOGFILE = 'birdlist_2013.txt'
 
 
-
 # Find the last tweet that information was taken from
 
 if os.path.exists(LATESTFILE):
@@ -47,7 +46,6 @@ for statusObj in results:
     txt = statusObj.text
 
     fp.write('\n' + '%s %s' % (date, txt))
-
 fp.close()
 
 
