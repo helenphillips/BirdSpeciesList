@@ -15,8 +15,8 @@ InteractiveMap = function()
 	{	
         // set map options
         var mapOptions = {
-			Zoom: 10,
-			center: "UK",
+			Zoom: 5,
+			center: new google.maps.LatLng(52.38049822, -1.747476),
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		}
         
@@ -31,11 +31,11 @@ InteractiveMap = function()
 		fusionLayer = new google.maps.FusionTablesLayer({
             styles: [{ 
                  markerOptions: {
-                    iconName: 'large_green'
+                    iconName: 'binoculars'
                  }
                }],
                query: {
-            	   select: 'Longitude',
+            	   select: 'Latitude',
             	   from: tableID
               }
         });
