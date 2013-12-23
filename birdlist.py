@@ -5,7 +5,7 @@
 
 
 import twitter, os, time
-
+from datetime import datetime
 
 os.chdir('/Users/Helen/BirdSpeciesList')
 
@@ -70,7 +70,9 @@ fp = open(LOGFILE, 'a')
 
 
 for statusObj in results:
-    date = statusObj.created_at[4:16]
+    date = statusObj.created_at
+    date_obj = datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
+    d = date_obj.strftime('%d/%m/%Y %I:%M%p')
     txt = statusObj.text
     coords = statusObj.geo
     latlong = coords['coordinates']
@@ -78,7 +80,7 @@ for statusObj in results:
     lng = latlong[1]
     
     ## generating SQL request and inserting into fusion table
-    query = "INSERT INTO table_id (Date, Species, Latitude, Longitude) VALUES (date, txt, lat, lng)"
+    query = "INSERT INTO %s (Date, Species, Latitude, Longitude) VALUES ('%s', '%s', '%s', '%s')" % (table_id, d, txt, lat, lng)
     print(service.query().sql(sql=query).execute())
 
     fp.write('\n' + '%s %s %s %s' % (date, txt, lat, lng))
