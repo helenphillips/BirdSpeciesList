@@ -3,21 +3,43 @@
 # Collects (species) information in the tweets
 # Appends information to a text file
 
+
 import twitter, os, time
 
-## import twitterlogon.py
 
-api=twitter.Api(consumer_key ='R64frT2AvxqSQgFMKfEg',
-consumer_secret='F2RfrOiOSFfcNxzNistcEc4GxVXWRbCG5en51RewI',
-access_token_key= '33945150-3SZ9B11FFm7UNaNTkcr8gl7eGpoOlQ8p9vGoZXCw',
-access_token_secret='2pqMAN8BfMewXxr4dVxHr9A18qkHXZncIq0JnO6id4')
+os.chdir('/Users/Helen/BirdSpeciesList')
 
 
-os.chdir('/Users/Helen/TwitterBirdList')
-
+from secrets import *
+import httplib2, urllib, urllib2
+from apiclient.discovery import build
+from oauth2client.client import SignedJwtAssertionCredentials
+from oauth2client.client import Storage
 
 LATESTFILE = 'bird_log.txt'
 LOGFILE = 'birdlist_2013.txt'
+API_EMAIL = APIEMAIL
+table_id = tableID
+api = api
+
+
+
+## Read the client_secrets key
+
+KEY_FILE = "pk.pem"
+k = file(KEY_FILE,'rb')
+key = k.read()
+k.close()
+
+## Open a connection and initiate a storage area for the key
+http = httplib2.Http()
+storage = Storage()
+
+## Create authorisation for fusion tables
+creds = SignedJwtAssertionCredentials(API_EMAIL, key,   
+    scope='https://www.googleapis.com/auth/fusiontables')
+http = creds.authorize(http)
+service = build("fusiontables", "v1", http=http)
 
 
 # Find the last tweet that information was taken from
@@ -46,6 +68,7 @@ fp = open(LOGFILE, 'a')
 
 # Get time information for the tweet and add to LOGFILE, and add text ie. species name
 
+
 for statusObj in results:
     date = statusObj.created_at[4:16]
     txt = statusObj.text
@@ -54,6 +77,9 @@ for statusObj in results:
     lat = latlong[0]
     lng = latlong[1]
     
+    ## generating SQL request and inserting into fusion table
+    query = "INSERT INTO table_id (Date, Species, Latitude, Longitude) VALUES (date, txt, lat, lng)"
+    print(service.query().sql(sql=query).execute())
 
     fp.write('\n' + '%s %s %s %s' % (date, txt, lat, lng))
 fp.close()
