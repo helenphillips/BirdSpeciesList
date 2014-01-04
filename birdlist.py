@@ -56,8 +56,7 @@ else:
 
 # Perform the search
 # Searching since the last search
-
-results = api.GetSearch('helensbirdlist', since_id=lastid)
+results = api.GetMentions(since_id=lastid)
 print 'Found %s results.' % (len(results))
 if len(results) == 0:
     print 'Nothing to reply to. Quitting.'
@@ -73,7 +72,7 @@ for statusObj in results:
     date = statusObj.created_at
     date_obj = datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
     d = date_obj.strftime('%d/%m/%Y %I:%M%p')
-    txt = statusObj.text
+    txt = statusObj.text[16:]
     coords = statusObj.geo
     latlong = coords['coordinates']
     lat = latlong[0]
