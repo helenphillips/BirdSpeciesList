@@ -4,7 +4,7 @@ InteractiveMap = function()
 	var mapContainer = $(".googlemap").get(0);
 	var map;
 	var fusionLayer;
-    var tableID = "1qgC8C0cjXot5wIV19wnv7Kq-zOndiBKiwoiPTbM";
+    var tableID = "1sAWNbQgSllzV5FOMFUXRxKV6PKMqjK9VPhEli5M";
     
     render();
     addFusionLayer();
