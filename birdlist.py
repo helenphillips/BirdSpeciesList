@@ -69,20 +69,27 @@ fp = open(LOGFILE, 'a')
 
 
 for statusObj in results:
-    date = statusObj.created_at
-    date_obj = datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
-    d = date_obj.strftime('%d/%m/%Y %I:%M%p')
-    txt = statusObj.text[16:]
-    coords = statusObj.geo
-    latlong = coords['coordinates']
-    lat = latlong[0]
-    lng = latlong[1]
+    if statusObj.geo == None:
+        date = statusObj.created_at
+        date_obj = datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
+        d = date_obj.strftime('%d/%m/%Y %I:%M%p')
+        txt = statusObj.text[16:]
+        fp.write('\n' + '%s %s' % (date, txt))
+    else:
+        date = statusObj.created_at
+        date_obj = datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
+        d = date_obj.strftime('%d/%m/%Y %I:%M%p')
+        txt = statusObj.text[16:]
+        coords = statusObj.geo
+        latlong = coords['coordinates']
+        lat = latlong[0]
+        lng = latlong[1]
     
-    ## generating SQL request and inserting into fusion table
-    query = "INSERT INTO %s (Date, Species, Latitude, Longitude) VALUES ('%s', '%s', '%s', '%s')" % (table_id, d, txt, lat, lng)
-    print(service.query().sql(sql=query).execute())
+        ## generating SQL request and inserting into fusion table
+        query = "INSERT INTO %s (Date, Species, Latitude, Longitude) VALUES ('%s', '%s', '%s', '%s')" % (table_id, d, txt, lat, lng)
+        print(service.query().sql(sql=query).execute())
 
-    fp.write('\n' + '%s %s %s %s' % (date, txt, lat, lng))
+        fp.write('\n' + '%s %s %s %s' % (date, txt, lat, lng))
 fp.close()
 
 
