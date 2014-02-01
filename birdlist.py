@@ -7,7 +7,7 @@
 import twitter, os, time
 from datetime import datetime
 
-os.chdir('/Users/Helen/BirdSpeciesList')
+os.chdir('/Users/martin/Sites/BirdSpeciesList')
 
 
 from secrets import *
@@ -60,42 +60,41 @@ results = api.GetMentions(since_id=lastid)
 print 'Found %s results.' % (len(results))
 if len(results) == 0:
     print 'Nothing to reply to. Quitting.'
-
-
-#Open LOGFILE
-fp = open(LOGFILE, 'a')
-
-# Get time information for the tweet and add to LOGFILE, and add text ie. species name
-
-
-for statusObj in results:
-    if statusObj.geo == None:
-        date = statusObj.created_at
-        date_obj = datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
-        d = date_obj.strftime('%d/%m/%Y %I:%M%p')
-        txt = statusObj.text[16:]
-        fp.write('\n' + '%s, %s' % (date, txt))
-    else:
-        date = statusObj.created_at
-        date_obj = datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
-        d = date_obj.strftime('%d/%m/%Y %I:%M%p')
-        txt = statusObj.text[16:]
-        coords = statusObj.geo
-        latlong = coords['coordinates']
-        lat = latlong[0]
-        lng = latlong[1]
+else:
+    #Open LOGFILE
+    fp = open(LOGFILE, 'a')
     
-        ## generating SQL request and inserting into fusion table
-        query = "INSERT INTO %s (Date, Species, Latitude, Longitude) VALUES ('%s', '%s', '%s', '%s')" % (table_id, d, txt, lat, lng)
-        print(service.query().sql(sql=query).execute())
-
-        fp.write('\n' + '%s, %s, %s, %s' % (date, txt, lat, lng))
-fp.close()
-
-
-# Update LATESTFILE to reflect the last tweet gathered in results
-fp = open(LATESTFILE, 'w')
-fp.write(str(max([x.id for x in results])))
-fp.close()
+    # Get time information for the tweet and add to LOGFILE, and add text ie. species name
+    
+    
+    for statusObj in results:
+        if statusObj.geo == None:
+            date = statusObj.created_at
+            date_obj = datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
+            d = date_obj.strftime('%d/%m/%Y %I:%M%p')
+            txt = statusObj.text[16:]
+            fp.write('\n' + '%s %s' % (date, txt))
+        else:
+            date = statusObj.created_at
+            date_obj = datetime.strptime(date, '%a %b %d %H:%M:%S +0000 %Y')
+            d = date_obj.strftime('%d/%m/%Y %I:%M%p')
+            txt = statusObj.text[16:]
+            coords = statusObj.geo
+            latlong = coords['coordinates']
+            lat = latlong[0]
+            lng = latlong[1]
+        
+            ## generating SQL request and inserting into fusion table
+            query = "INSERT INTO %s (Date, Species, Latitude, Longitude) VALUES ('%s', '%s', '%s', '%s')" % (table_id, d, txt, lat, lng)
+            print(service.query().sql(sql=query).execute())
+    
+            fp.write('\n' + '%s %s %s %s' % (date, txt, lat, lng))
+    fp.close()
+    
+    
+    # Update LATESTFILE to reflect the last tweet gathered in results
+    fp = open(LATESTFILE, 'w')
+    fp.write(str(max([x.id for x in results])))
+    fp.close()
 
 
