@@ -10,6 +10,11 @@
     box-sizing: border-box; 
 }
 
+.controls {
+	padding-top: 50px;
+	text-align: center;
+}
+
 .mapContainer {
     width: 100%;
     max-width: 900px;

@@ -16,7 +16,7 @@ from apiclient.discovery import build
 from oauth2client.client import SignedJwtAssertionCredentials
 from oauth2client.client import Storage
 
-LATESTFILE = 'bird_log.txt'
+LATESTFILE = 'birdlist_latest.txt'
 LOGFILE = 'birdlist_2013.txt'
 API_EMAIL = APIEMAIL
 table_id = tableID
